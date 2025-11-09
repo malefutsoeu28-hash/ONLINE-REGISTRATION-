@@ -1,0 +1,288 @@
+<html>
+<head>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Online Exam | Submit & View Results</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Exam-specific styles */
+    .exam-header {
+      background-image: url("header-bg.jpg");
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .timer {
+      background: #e74c3c;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .exam-body {
+      padding: 25px;
+    }
+
+    .question {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #eee;
+    }
+
+    .question-number {
+      font-weight: 600;
+      color: #2980b9;
+      margin-bottom: 8px;
+    }
+
+    .question-text {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .options label {
+      display: block;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      margin: 8px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .options input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .options label:hover {
+      background: #e3f2fd;
+    }
+
+    .exam-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    
+    #results {
+      display: none;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    
+    :target#results {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Result Card Styles */
+    .result-card {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .result-header {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+    }
+
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      color: #27ae60;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .score-value { font-size: 2.8rem; }
+    .score-label { font-size: 1rem; color: #7f8c8d; }
+
+    .result-body {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 25px 0;
+      text-align: center;
+    }
+
+    .stat-item {
+      flex: 1;
+    }
+
+    .stat-value {
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+
+    .feedback {
+      background: #f1f8e9;
+      padding: 16px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .btn-download,
+    .btn-dashboard {
+      display: inline-block;
+      margin: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .btn-download {
+      background: #3498db;
+      color: white;
+    }
+
+    .btn-dashboard {
+      background: #95a5a6;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  
+  <a href="index.html">HOME</a>
+  <a href="register.html">REGISTER</a>
+  <a href="Dashboard.html">DASHBOARD</a>
+  <a href="profile.html">PROFILE</a>
+  
+  <div class="container">
+    <!-- ✅ EXAM SECTION (default visible) -->
+    <div class="exam-card">
+      <div class="exam-header">
+        <div>
+          <h2>Midterm Examination – WEB DESIGN</h2>
+          <p>Duration: 30 minutes | Total: 5 Questions</p>
+        </div>
+        <div class="timer">⏱ 29:15</div>
+      </div>
+
+      <div class="exam-body">
+        <form id="examForm">
+          <div class="question">
+            <div class="question-number">Q1.</div>
+            <div class="question-text">What does HTML stand for?</div>
+            <div class="options">
+              <label><input type="radio" name="q1" value="a" /> Hyperlinks and Text Markup Language</label>
+              <label><input type="radio" name="q1" value="b" /> Home Tool Markup Language</label>
+              <label><input type="radio" name="q1" value="c" checked /> HyperText Markup Language</label>
+              <label><input type="radio" name="q1" value="d" /> Hyperlinking Textual Machine Language</label>
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-number">Q2.</div>
+            <div class="question-text">Which tag inserts a line break?</div>
+            <div class="options">
+              <label><input type="radio" name="q2" value="a" /> <br></label>
+              <label><input type="radio" name="q2" value="b" checked /> <br /></label>
+              <label><input type="radio" name="q2" value="c" /> <break></label>
+              <label><input type="radio" name="q2" value="d" /> <lb></label>
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="question-number">Q3.</div>
+            <div class="question-text">Which CSS property controls font size?</div>
+            <div class="options">
+              <label><input type="radio" name="q3" value="a" /> text-size</label>
+              <label><input type="radio" name="q3" value="b" /> font-style</label>
+              <label><input type="radio" name="q3" value="c" checked /> font-size</label>
+              <label><input type="radio" name="q3" value="d" /> text-font</label>
+            </div>
+          </div>
+
+          <!-- ⚠️ In pure HTML/CSS, we can't auto-calculate — so we simulate 3/3 correct = 100%. 
+               For demo, assume student got Q1, Q2, Q3 correct → 100% (you'd add more in real app) -->
+
+          <div class="exam-actions">
+            <!-- 🔗 Submit links to #results anchor -->
+            <a href="#results" class="btn-primary" style="width: 200px;">✅ Submit Exam</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ✅ RESULTS SECTION (hidden until #results is targeted) -->
+    <div id="results" class="result-card">
+      <div class="result-header">
+        <h1>🎉 Exam Completed!</h1>
+        <p>Results are ready instantly</p>
+      </div>
+      <div class="result-body">
+        <div class="score-circle">
+          <div class="score-value">100%</div>
+          <div class="score-label">Score</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Correct</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Incorrect</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Attempted</div>
+          </div>
+        </div>
+
+        <div class="feedback">
+          "Excellent work! You’ve mastered the fundamentals of HTML & CSS. Keep it up!"
+        </div>
+
+        <div>
+          <a href="#" class="btn-download">📥 Download Score Report</a>
+          <a href="#" class="btn-dashboard">⇦ Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

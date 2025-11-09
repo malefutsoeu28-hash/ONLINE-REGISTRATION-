@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — ExamHub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --success: #4ade80;
+      --warning: #facc15;
+      --danger: #f87171;
+      --glass-bg: rgba(255, 255, 255, 0.07);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --section-bg: rgba(15, 30, 45, 0.6);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .role-badge {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .role-student { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+    .role-examiner { background: rgba(67, 97, 238, 0.2); color: #4361ee; }
+    .role-admin { background: rgba(250, 204, 21, 0.2); color: #facc15; }
+
+    /* Layout Grid */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .profile-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      background: rgba(0, 0, 0, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #cbd5e1;
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #0f172a;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* Profile Header */
+    .profile-header {
+      text-align: center;
+      padding: 32px 24px 24px;
+    }
+
+    .avatar-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 0 auto;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .avatar-edit {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .user-info h2 {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .user-info p {
+      opacity: 0.8;
+      font-size: 1rem;
+    }
+
+    /* Profile Details */
+    .profile-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .profile-details { grid-template-columns: 1fr; }
+    }
+
+    .detail-item {
+      margin-bottom: 16px;
+    }
+
+    .detail-label {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-weight: 500;
+    }
+
+    .editable:hover .detail-value {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Edit Form (hidden by default) */
+    .edit-form {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    /* Security Section */
+    .security-list {
+      list-style: none;
+    }
+
+    .security-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .security-item:last-child {
+      border-bottom: none;
+    }
+
+    .security-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .security-label i {
+      color: var(--success);
+    }
+
+    .security-status {
+      font-weight: 500;
+    }
+
+    /* Activity Log */
+    .activity-item {
+      display: flex;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(67, 97, 238, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .activity-content h4 {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .activity-time {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #4b5563;
+      transition: .4s;
+      border-radius: 26px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="index.html">HOME</a>
+       <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="register.html"> register</a>
+    <a href="exam.html">📝 Take Exam</a>
+    <a href="profile.html">👤 Profile</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">My Profile</h1>
+      <span class="role-badge role-student">Student</span>
+    </div>
+
+    <div class="profile-grid">
+      <!-- Main Profile Content -->
+      <div>
+        <!-- Profile Card -->
+        <div class="card">
+          <div class="profile-header">
+            <div class="avatar-container">
+              <img src="profile-bg.jpg" alt="profile picture" class="profile-pic">
+              <div class="avatar-edit">
+                <i class="fas fa-camera"></i>
+              </div>
+            </div>
+            <div class="user-info">
+              <h2>ANASTASIA</h2>
+              <p>WEB DESIGN</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Profile Details -->
+            <div class="profile-details" id="profileDetails">
+              <div class="detail-item">
+                <div class="detail-label">Full Name</div>
+                <div class="detail-value editable" data-field="fullName">ANASTASIA </div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Email</div>
+                <div class="detail-value">LIMKOKWING UNIVERSITY OF CREATIVE TECHNOLOGY</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Student ID</div>
+                <div class="detail-value">STU2025042</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Phone</div>
+                <div class="detail-value editable" data-field="phone">63931801</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Department</div>
+                <div class="detail-value">WEB DESIGN</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Enrollment Date</div>
+                <div class="detail-value">NOV 15, 2025</div>
+              </div>
+            </div>
+
+            <!-- Edit Form (hidden) -->
+            <form id="editForm" class="edit-form">
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                  <label for="firstName">First Name</label>
+                  <input type="text" id="firstName" value="ANASTASIA">
+                </div>
+                
+              
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" value="malefutsoeu4@gmail.com" disabled>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" value="63931801">
+              </div>
+              <div class="form-group">
+                <label for="bio">Bio / About</label>
+                <textarea id="bio" placeholder="Tell us about yourself...">First year student. </textarea>
+              </div>
+              <div class="card-actions">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button type="button" class="btn btn-outline" id="cancelEdit">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+              </div>
+            </form>
+
+            <div class="card-actions" style="margin-top: 16px;" id="editBtnContainer">
+              <button class="btn btn-outline" id="editBtn">
+                <i class="fas fa-edit"></i> Edit Profile
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Card -->
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-header">
+            <h3 class="card-title">Security Settings</h3>
+          </div>
+          <div class="card-body">
+            <ul class="security-list">
+              <li class="security-item">
+                <div class="security-label">
+                  <i class="fas fa-lock"></i>
+                  <span>Password</span>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="window.location='reset-password.html'">
+                  Change
+                </button>
+              </li>
+              <li class="security-item">
+                <div class="security-label">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Two-Factor Authentication</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </li>
+              <li class="security-item">
+                <div class="security-label">
+                  <i class="fas fa-history"></i>
+                  <span>Active Sessions</span>
+                </div>
+                <span class="security-status">2 devices</span>
+              </li>
+              <li class="security-item">
+                <div class="security-label">
+                  <i class="fas fa-bell"></i>
+                  <span>Email Notifications</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Activity</h3>
+          </div>
+          <div class="card-body">
+            <div class="activity-item">
+              <div class="activity-icon">
+                <i class="fas fa-file-alt" style="color:#4361ee;"></i>
+              </div>
+              <div class="activity-content">
+                <h4>Submitted exam: Web Technologies</h4>
+                <div class="activity-time">Today, 14:32</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">
+                <i class="fas fa-graduation-cap" style="color:#4ade80;"></i>
+              </div>
+              <div class="activity-content">
+                <h4>Result released: Data Structures (87%)</h4>
+                <div class="activity-time">Nov 7, 2025</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">
+                <i class="fas fa-user-edit" style="color:#facc15;"></i>
+              </div>
+              <div class="activity-content">
+                <h4>Updated profile information</h4>
+                <div class="activity-time">Nov 5, 2025</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">
+                <i class="fas fa-key" style="color:#f87171;"></i>
+              </div>
+              <div class="activity-content">
+                <h4>Password changed</h4>
+                <div class="activity-time">Oct 28, 2025</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exam Stats (Student-Specific) -->
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-header">
+            <h3 class="card-title">Exam Statistics</h3>
+          </div>
+          <div class="card-body">
+            <div class="detail-item">
+              <div class="detail-label">Total Exams Taken</div>
+              <div class="detail-value">12</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Average Score</div>
+              <div class="detail-value">84%</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Highest Score</div>
+              <div class="detail-value">96% </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Next Exam</div>
+              <div class="detail-value">Web design<br><small>Nov 12, 2025 • 10:00 AM</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Edit Profile Toggle
+    const editBtn = document.getElementById('editBtn');
+    const editForm = document.getElementById('editForm');
+    const profileDetails = document.getElementById('profileDetails');
+    const editBtnContainer = document.getElementById('editBtnContainer');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const editables = document.querySelectorAll('.editable');
+
+    // Make detail fields editable on click
+    editables.forEach(el => {
+      el.addEventListener('click', function() {
+        enterEditMode();
+      });
+    });
+
+    editBtn.addEventListener('click', enterEditMode);
+    
+    function enterEditMode() {
+      profileDetails.style.display = 'none';
+      editForm.style.display = 'block';
+      editBtnContainer.style.display = 'none';
+    }
+
+    cancelEdit.addEventListener('click', exitEditMode);
+    
+    function exitEditMode() {
+      editForm.style.display = 'none';
+      profileDetails.style.display = 'grid';
+      editBtnContainer.style.display = 'block';
+    }
+
+    // Form submit
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Update displayed values
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const phone = document.getElementById('phone').value;
+      
+      document.querySelector('[data-field="fullName"]').textContent = `${firstName} ${lastName}`;
+      document.querySelector('[data-field="phone"]').textContent = phone;
+      
+      exitEditMode();
+      alert('✅ Profile updated successfully!');
+      
+      // In real app: send to /api/profile
+      console.log('Profile updated:', { firstName, lastName, phone });
+    });
+
+    // Avatar upload simulation
+    document.querySelector('.avatar-edit').addEventListener('click', function() {
+      alert('📸 Avatar upload feature ready for integration with backend!');
+    });
+
+    // Toggle switches
+    document.querySelectorAll('.toggle input').forEach(toggle => {
+      toggle.addEventListener('change', function() {
+        const action = this.checked ? 'enabled' : 'disabled';
+        const label = this.closest('.security-item').querySelector('.security-label span').textContent;
+        console.log(`${label} ${action}`);
+      });
+    });
+  </script>
+</body>
+</html>
